@@ -39,18 +39,7 @@
         // Agora o aplicativo utiliza as credenciais de configuração e o token de autenticação
         // fornecidos pelo ambiente do Canvas.
         // ====================================================================================
-        // const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-
-        const firebaseConfig = {
-        iKey: "AIzaSyBtn9wg7QvJHUVAewia_TLclUEKVCTx5N4",
-        authDomain: "gestaoimobiliaria-341da.firebaseapp.com",
-        projectId: "gestaoimobiliaria-341da",
-        storageBucket: "gestaoimobiliaria-341da.firebasestorage.app",
-        messageSenderId: "245430336053",
-        ID do aplicativo: "1:245430336053:web:c2c5480e41b59949ee8f7c",
-        ID de medição: "G-EDJFFK5W2L"
-        };
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
         
         // Use um ID de aplicativo padrão se não for fornecido, embora o Canvas sempre o forneça.
@@ -176,11 +165,20 @@
 
             useEffect(() => {
                 // Checa se a configuração do Firebase está disponível
-                if (Object.keys(firebaseConfig).length === 0 || !firebaseConfig.projectId) {
-                    setFirebaseError("A configuração do Firebase está faltando ou os scripts do Firebase não foram carregados.");
+                console.log("Variável __firebase_config:", typeof __firebase_config !== 'undefined' ? __firebase_config : "Não definida");
+
+                // Adiciona uma verificação para os scripts do Firebase serem carregados na janela.
+                if (!window.firebase) {
+                    setFirebaseError("Os scripts do Firebase não foram carregados. Por favor, verifique a conexão com a internet ou os links dos CDNs.");
                     setLoading(false);
                     return;
                 }
+                if (Object.keys(firebaseConfig).length === 0 || !firebaseConfig.projectId) {
+                    setFirebaseError("A configuração do Firebase está faltando. Certifique-se de que o ambiente de execução forneça as credenciais ou preencha-as manualmente.");
+                    setLoading(false);
+                    return;
+                }
+
                 const { initializeApp, getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, getFirestore } = window.firebase;
 
                 try {
